@@ -28,7 +28,7 @@ object KafkaAvroProducer extends App {
    implicit val actorMaterializer = ActorMaterializer()
    val resource = getClass.getResource("/countrycapital.csv")
    val path = Paths.get(resource.toURI)
-   val source = FileTailSource.lines(path, 8092, 100 millis).map(ByteString(_))
+   val source = FileIO.fromPath(path)
    val flow1 = CsvParsing.lineScanner()
    val flow2 = Flow[List[ByteString]].map(list => list.map(_.utf8String))
    val flow3 = Flow[List[String]].map(list => CountryCapital(list(0), list(1)))
